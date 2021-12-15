@@ -20,7 +20,7 @@ function App() {
 }
 
 function onSend(data) {
-  console.log(data);
+  alert(JSON.stringify(data, null, 2));
 }
 
 export default App;
