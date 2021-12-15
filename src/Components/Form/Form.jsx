@@ -2,15 +2,23 @@ import React, { useState } from 'react';
 
 import { Button, TextField, Switch, FormControlLabel } from '@material-ui/core';
 
-export default function Form() {
-    let [name, setName] = useState("");
-    let [secondName, setSecondName] = useState("");
-    let [cpf, setCpf] = useState("");
-    let [promotions, setPromotions] = useState(true);
-    let [newsletter, setNewsletter] = useState(true);
+export default function Form({ onSend, Cpf }) {
+
+    const [name, setName] = useState("");
+    const [secondName, setSecondName] = useState("");
+    const [cpf, setCpf] = useState("");
+    const [promotions, setPromotions] = useState(true);
+    const [newsletter, setNewsletter] = useState(true);
+
+    const [errors, setErrors] = useState({ ...Cpf.initialState });
 
     return (
-        <form>
+        <form
+            onSubmit={(event) => {
+                event.preventDefault();
+                onSend({ name, secondName, cpf, promotions, newsletter });
+            }}
+        >
             <TextField 
             value={name}
             onChange={(event) => {    
@@ -44,9 +52,16 @@ export default function Form() {
             label="Second Name"/>
 
             <TextField 
+            error = {! errors.cpf.valid}
+            helperText= {errors.cpf.text}
             value={cpf}
             onChange={(event) => {    
                 setCpf(event.target.value)
+            }}
+            onBlur={(event) => {
+                const isValid = Cpf._validate(event.target.value);
+
+                setErrors({ cpf: isValid });
             }}
             margin="normal" 
             variant="outlined" 
