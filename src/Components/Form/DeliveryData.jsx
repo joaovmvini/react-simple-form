@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button } from '@mui/material'
 import { Box } from '@mui/system';
+
+import { searchByCep } from '../../models/API';
 
 export default function DeliveryData({ onSend, onReturn }) {
 
@@ -10,6 +12,27 @@ export default function DeliveryData({ onSend, onReturn }) {
     const [number, setNumber] = useState('');
     const [city, setCity] = useState('');
 
+    const setCepResults = async function(c) {
+        const result = await searchByCep(c);
+
+        if (result) {
+            const { logradouro, bairro, complemento, localidade } = result;
+
+            if (logradouro) {
+                setAddress(`${bairro}, ${logradouro}, ${complemento}`);
+            } else {
+                setAddress('');
+            }
+
+            if (localidade) {
+                setCity(localidade);
+            } else {
+                setCity('');
+            }
+        }
+        
+    }
+
     return (
         <form onSubmit={(event) => {
             event.preventDefault();
@@ -17,7 +40,11 @@ export default function DeliveryData({ onSend, onReturn }) {
         }}>
             <TextField
                 value={cep}
-                onChange={(event) => setCep(event.target.value)}
+                onChange={(event) => {
+                    let cepTemp = event.target.value;
+                    setCep(cepTemp);
+                    setCepResults(cepTemp);
+                }}
                 id='cep' 
                 label='Cep' 
                 type='number'

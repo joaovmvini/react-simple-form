@@ -10,7 +10,7 @@ export default function PersonalData({ nextStage, Cpf, onReturn }) {
     const [promotions, setPromotions] = useState(true);
     const [newsletter, setNewsletter] = useState(true);
 
-    const [errors, setErrors] = useState({ ...Cpf.initialState });
+    //const [errors, setErrors] = useState({ ...Cpf.initialState });
 
     return (
         <form
@@ -52,16 +52,16 @@ export default function PersonalData({ nextStage, Cpf, onReturn }) {
             label="Second Name"/>
 
             <TextField 
-            error = {! errors.cpf.valid}
-            helperText= {errors.cpf.text}
+            //error = {! errors.cpf.valid}
+            //helperText= {errors.cpf.text}
             value={cpf}
             onChange={(event) => {    
                 setCpf(event.target.value)
             }}
             onBlur={(event) => {
-                const isValid = Cpf._validate(event.target.value);
+                //const isValid = Cpf._validate(event.target.value);
 
-                setErrors({ cpf: isValid });
+                //setErrors({ cpf: isValid });
             }}
             margin="normal" 
             variant="outlined" 
