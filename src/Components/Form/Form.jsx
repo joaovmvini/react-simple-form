@@ -1,103 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { Button, TextField, Switch, FormControlLabel } from '@material-ui/core';
+import PersonalData from './PersonalData';
+import UserData from './UserData';
+import DeliveryData from './DeliveryData';
+import { Typography, Stepper, Step, StepLabel } from '@mui/material';
 
-export default function Form({ onSend, Cpf }) {
+export default function Form({ onSend, validations: { cpfValidator, passwordValidator } }) {
+    const [currentStage, setCurrentStage] = useState(0);
+    const [collectedData, setData] = useState({});
 
-    const [name, setName] = useState("");
-    const [secondName, setSecondName] = useState("");
-    const [cpf, setCpf] = useState("");
-    const [promotions, setPromotions] = useState(true);
-    const [newsletter, setNewsletter] = useState(true);
+    useEffect(function submit() {
+        if (currentStage === components.length) {
+            onSend(collectedData);
+        }
+    })
 
-    const [errors, setErrors] = useState({ ...Cpf.initialState });
+    const collectData = function(data) {
+        setData({ ...collectedData, ...data })
+    }
 
+    const gotoNextStage = function(stageData) {
+        collectData(stageData);
+        setCurrentStage(currentStage + 1);
+    }
+
+    const gotoPreviousStage = function() {
+        setCurrentStage(currentStage - 1);
+    }
+
+    const components = [
+        <UserData nextStage = { gotoNextStage } passwordValidator={passwordValidator}></UserData>,
+        <PersonalData nextStage = { gotoNextStage } onReturn = { gotoPreviousStage } cpfValidator={cpfValidator}></PersonalData>,
+        <DeliveryData onSend = { gotoNextStage } onReturn = { gotoPreviousStage }></DeliveryData>,
+        <Typography sx={{ mt: 3 }} align='center' color='primary' variant="h5">Thank you for register!</Typography>
+    ];
+    
     return (
-        <form
-            onSubmit={(event) => {
-                event.preventDefault();
-                onSend({ name, secondName, cpf, promotions, newsletter });
-            }}
-        >
-            <TextField 
-            value={name}
-            onChange={(event) => {    
-                let tempName = event.target.value;
+        <>
+            <Stepper sx={{ mt: 4 }} activeStep={currentStage}>
+                <Step><StepLabel>Login</StepLabel></Step>
+                <Step><StepLabel>Personal Data</StepLabel></Step>
+                <Step><StepLabel>Delivery Data</StepLabel></Step>
+            </Stepper>
 
-                if (tempName.length > 20) {
-                    tempName = tempName.substr(0, 20);
-                }
-
-                setName(tempName);
-            }}
-            margin="normal" 
-            variant="outlined" 
-            fullWidth id="name" 
-            label="Name"/>
-
-            <TextField 
-            value={secondName}
-            onChange={(event) => {
-                let tempSecondName = event.target.value;
-
-                if (tempSecondName.length > 15) {
-                    tempSecondName = tempSecondName.substr(0, 15);
-                }
-
-                setSecondName(tempSecondName);
-            }}
-            margin="normal" 
-            variant="outlined" 
-            fullWidth id="secondName" 
-            label="Second Name"/>
-
-            <TextField 
-            error = {! errors.cpf.valid}
-            helperText= {errors.cpf.text}
-            value={cpf}
-            onChange={(event) => {    
-                setCpf(event.target.value)
-            }}
-            onBlur={(event) => {
-                const isValid = Cpf._validate(event.target.value);
-
-                setErrors({ cpf: isValid });
-            }}
-            margin="normal" 
-            variant="outlined" 
-            fullWidth id="cpf" 
-            label="CPF"/>
-
-
-            <FormControlLabel 
-            label="Promotions" 
-            control={<Switch 
-                checked={promotions}
-                onChange={(event) => {
-                    setPromotions(event.target.checked)
-                }} 
-            name="promotions" 
-            color="primary" />}
-            >
-            </FormControlLabel>
-
-            <FormControlLabel 
-            label="Newsletter" 
-            control={<Switch 
-            checked={newsletter}
-            onChange={(event) => {
-                setNewsletter(event.target.checked);
-            }}
-            name="newsletter" 
-            color="primary" />}></FormControlLabel>
-
-
-            <Button 
-                variant="contained" 
-                color="primary" 
-                type="submit">Register
-            </Button>
-
-        </form>
+            { components[currentStage] }
+        </>
     )
 }
