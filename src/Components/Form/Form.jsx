@@ -5,7 +5,7 @@ import UserData from './UserData';
 import DeliveryData from './DeliveryData';
 import { Typography, Stepper, Step, StepLabel } from '@mui/material';
 
-export default function Form({ onSend, validations: { cpfValidator, passwordValidator } }) {
+export default function Form({ onSend }) {
     const [currentStage, setCurrentStage] = useState(0);
     const [collectedData, setData] = useState({});
 
@@ -29,8 +29,8 @@ export default function Form({ onSend, validations: { cpfValidator, passwordVali
     }
 
     const components = [
-        <UserData nextStage = { gotoNextStage } passwordValidator={passwordValidator}></UserData>,
-        <PersonalData nextStage = { gotoNextStage } onReturn = { gotoPreviousStage } cpfValidator={cpfValidator}></PersonalData>,
+        <UserData nextStage = { gotoNextStage } ></UserData>,
+        <PersonalData nextStage = { gotoNextStage } onReturn = { gotoPreviousStage } ></PersonalData>,
         <DeliveryData onSend = { gotoNextStage } onReturn = { gotoPreviousStage }></DeliveryData>,
         <Typography sx={{ mt: 3 }} align='center' color='primary' variant="h5">Thank you for register!</Typography>
     ];

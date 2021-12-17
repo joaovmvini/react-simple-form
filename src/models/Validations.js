@@ -25,4 +25,17 @@ const passwordValidator = function(password) {
     }
 }
 
-export default { cpfValidator, passwordValidator }
+const nameValidator = function(username) {
+    if (username.length < 4) {
+        return {
+            valid: false,
+            text: 'Invalid input'
+        }
+    }
+    return {
+        valid: true,
+        text: ''
+    }
+}
+
+export { cpfValidator, passwordValidator, nameValidator }

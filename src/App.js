@@ -8,13 +8,18 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-import validations from './models/Validations';
+import { cpfValidator, passwordValidator, nameValidator } from './models/Validations';
+import FormValidations from './contexts/FormValidations';
 
 function App() {
   return (
     <Container component="article" maxWidth="sm">
         <Typography variant="h3" component="h1" align="center" >Register Form</Typography>
-        <Form onSend = {onSend} validations = {{ ...validations }}></Form>
+        <FormValidations.Provider 
+          value={{ cpf: cpfValidator, password: passwordValidator, username: nameValidator}}
+        >
+          <Form onSend = {onSend}></Form>
+        </FormValidations.Provider>
     </Container>
   );
 }
